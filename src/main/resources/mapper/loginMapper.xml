@@ -3,4 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxx.graduate.dao.LoginDao">
 
+<select id="getAdminInfoByAccont" resultType="com.hxx.graduate.entity.User">
+    select id, ins_name, phone, address, account, roleid, img_url from admin_info where account = #{account} and lip = #{lip}
+    </select>
+
+<select id="getRoleByAccount" resultType="java.lang.String">
+    SELECT role_id  FROM role_account WHERE account= #{account};
+    </select>
 </mapper>
