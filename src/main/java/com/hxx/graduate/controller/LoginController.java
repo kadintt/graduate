@@ -4,6 +4,8 @@ package com.hxx.graduate.controller;
 import com.hxx.graduate.entity.User;
 import com.hxx.graduate.service.LoginService;
 import com.hxx.graduate.utils.JWTUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,12 +16,17 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class LoginController {
 
     @Resource
     LoginService loginService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     @RequestMapping("api/login")
     public Map<String, Object> login(@RequestBody User user) {
@@ -41,6 +48,8 @@ public class LoginController {
             resultMap.put("msg", "登录成功");
             resultMap.put("token", token); // 响应token，存储在客户端
             resultMap.put("user",u);
+//            将token放入redis缓存中
+            redisTemplate.opsForValue().set(u.getAccount(), token, 1, TimeUnit.DAYS);
         }else  {
             String errorStr = (String) map.get("errorMsg");
             if (errorStr == null) {
