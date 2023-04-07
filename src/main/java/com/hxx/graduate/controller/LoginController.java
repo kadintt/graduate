@@ -7,10 +7,7 @@ import com.hxx.graduate.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -27,7 +24,13 @@ public class LoginController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @CrossOrigin
+    @RequestMapping("api/test")
+    public String test() {
+        return "hello world";
+    }
 
+    @CrossOrigin
     @RequestMapping("api/login")
     public Map<String, Object> login(@RequestBody User user) {
         System.out.println(user.getAccount());
@@ -44,7 +47,7 @@ public class LoginController {
             payload.put("headurl",u.getImg_url());
             // 生成token
             String token = JWTUtil.getToken(payload);
-            resultMap.put("status", "1");
+            resultMap.put("status", "200");
             resultMap.put("msg", "登录成功");
             resultMap.put("token", token); // 响应token，存储在客户端
             resultMap.put("user",u);
